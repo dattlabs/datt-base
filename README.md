@@ -22,7 +22,7 @@ Supervisord, Hekad, Cron, sshd and standard build utils have been pre-installed 
 
 ### Login Details
 
-Defaults (change
+Defaults (easy to later change these in an custom layer)
 - root / root
 - ubuntu / ubuntu
 
