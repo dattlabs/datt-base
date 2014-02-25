@@ -10,13 +10,15 @@ Supervisord, Hekad, Cron, sshd and standard build utils have been pre-installed 
 
 ##### From Docker Public Repository
 
-  > docker pull datt/datt-base
+    > docker pull datt/datt-base
 
 ##### Using Source
 
-  > git clone git@github.com:dattlabs/datt-base.git
-  > cd datt-base
-  > docker build -t {{ user }}/{{ image-name }} .
+
+    > git clone git@github.com:dattlabs/datt-base.git
+    > cd datt-base
+    > docker build -t {{ user }}/{{ image-name }} .
+  
 
 ### Login Details
 
@@ -37,4 +39,4 @@ Defaults (change
 
 ### Set local firewall:
 
-- sudo ufw allow 5565/tcp
+- sudo ufw allow 5565/tcp (example only. consult your security guru for the correct setting in your environment.)
