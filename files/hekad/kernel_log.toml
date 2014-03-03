@@ -1,0 +1,3 @@
+[LogfileInput]
+logfile = "/var/log/kern.log"
+logger = "kernel"

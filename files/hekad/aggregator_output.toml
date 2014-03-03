@@ -1,0 +1,5 @@
+[aggregator_output]
+type = "TcpOutput"
+#message_matcher = "Type != 'logfile' && Type != 'heka.counter-output' && Type != 'heka.all-report'"
+message_matcher = "Type != 'heka.all-report'"
+address = "{{LOGSERVER_IP}}:5565"

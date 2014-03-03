@@ -1,0 +1,3 @@
+[LogfileInput]
+logfile = "/var/log/auth.log"
+logger = "auth"

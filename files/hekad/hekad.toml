@@ -1,0 +1,42 @@
+#https://hekad.readthedocs.org/en/latest/configuration.html
+[hekad]
+#cpuprof = "/var/log/hekad/cpuprofile.log"
+decoder_poolsize = 10
+max_message_loops = 4
+max_process_inject = 10
+max_timer_inject  = 10
+maxprocs = 10
+#memprof = "/var/log/hekad/memprof.log"
+plugin_chansize = 10
+poolsize = 100
+
+#[elasticsearch]
+
+# Listens for Heka messages on TCP port 5565.
+# [TcpInput]
+# address = ":5565"
+# parser_type = "message.proto"
+# decoder = "ProtobufDecoder"
+
+# # Writes output from `CounterFilter`, `lua_sandbox`, and Heka's internal
+# # reports to stdout.
+# [debug]
+# type = "LogOutput"
+# message_matcher = "Type == 'heka.counter-output' || Type == 'heka.all-report' || Type == 'heka.sandbox-output'"
+
+# # Counts throughput of messages sent from a Heka load testing tool.
+# [CounterFilter]
+# message_matcher = "Type == 'hekabench' && EnvVersion == '0.8'"
+# output_timer = 1
+
+# # Defines a sandboxed filter that will be written in Lua.
+# [lua_sandbox]
+# type = "SandboxFilter"
+# message_matcher = "Type == 'hekabench' && EnvVersion == '0.8'"
+# output_timer = 1
+# script_type = "lua"
+# preserve_data = true
+# filename = "lua/sandbox.lua"
+# memory_limit = 32767
+# instruction_limit = 1000
+# output_limit = 1024

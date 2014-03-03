@@ -1,0 +1,9 @@
+[supervisord_stderr]
+type = "LogfileDirectoryManagerInput"
+logfile = "/var/log/supervisor/*/stderr.log"
+ticker_interval = 5
+
+[supervisord_stdout]
+type = "LogfileDirectoryManagerInput"
+logfile = "/var/log/supervisor/*/stdout.log"
+ticker_interval = 5
