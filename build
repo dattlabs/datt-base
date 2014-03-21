@@ -7,4 +7,4 @@ DOCKERINDEX=${DOCKERINDEX_LOCAL:-"datt/"}
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 CURRENT_DIR="${DIR##*/}"
 
-docker build -rm -t=$DOCKERINDEX$CURRENT_DIR:latest $DIR/.
+docker build --rm -t=$DOCKERINDEX$CURRENT_DIR:latest $DIR/.
