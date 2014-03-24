@@ -78,7 +78,7 @@ RUN \
   mkdir -p /var/lib/syslog-ng; \
   \
   `# logrotate`; \
-  apt-get install -y logrotate;
+  apt-get -y install logrotate;
 
 
 # copy required conf files and folders
