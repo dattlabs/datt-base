@@ -81,17 +81,35 @@ RUN \
   apt-get -y install logrotate;
 
 
-# copy required conf files and folders
-ADD files /files
+# heka and supervisor configs
+ADD files/hekad/ /etc/hekad/
+ADD files/supervisor/ /etc/supervisor/
 
 RUN \
   `# setup supervisord config files and log directories`; \
   for p in hekad crond sshd syslog-ng; do mkdir -v /var/log/supervisor/$p; done; \
-  cp -vr /files/hekad /etc; \
-  cp -vr /files/supervisor /etc; \
   \
   `# Add LOGSERVER ip address to hekad config`; \
   LOGSERVER_IP=$(/sbin/ip route | awk '/default/ { print $3; }'); \
   sed -i "s/{{LOGSERVER_IP}}/$LOGSERVER_IP/g" /etc/hekad/aggregator_output.toml;
+
+# serf
+ADD files/serf-scripts /files/
+
+RUN \
+  `# Install serf client 0.5.0`; \
+  mkdir -vp /opt/serf/; cd /opt/serf/; \
+  DL_LOCATION="https://dl.bintray.com/mitchellh/serf/"; \
+  DL_FILE="0.5.0_linux_amd64.zip"; \
+  wget --continue --no-check-certificate $DL_LOCATION$DL_FILE ; \
+  unzip $DL_FILE; \
+  rm -v *.zip;
+
+RUN \
+  `# Install symlinks so it's in the path`; \
+  ln -s /opt/serf/serf /usr/sbin/serf; \
+
+# Add app to supervisor
+RUN mkdir /var/log/supervisor/serf
 
 CMD ["/usr/bin/supervisord", "--nodaemon"]
