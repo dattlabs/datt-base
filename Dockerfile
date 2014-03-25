@@ -68,10 +68,12 @@ RUN \
 RUN \
   `# logging`; \
   \
-  `# heka 0.4.2 install`; \
-  wget -c --no-check-certificate https://github.com/mozilla-services/heka/releases/download/v0.4.2/heka_0.4.2_amd64.deb; \
-  dpkg -i ./heka_0.4.2_amd64.deb; \
-  rm -vf heka_0.4.2_amd64.deb; \
+  `# heka 0.5.1 install`; \
+  DL_LOCATION="https://github.com/mozilla-services/heka/releases/download/v0.5.1/"; \
+  DL_FILE="heka_0.5.1_amd64.deb"; \
+  wget -c --no-check-certificate $DL_LOCATION$DL_FILE; \
+  dpkg -i ./$DL_FILE; \
+  rm -vf ./$DL_FILE; \
   \
   `# syslog-ng`; \
   apt-get -y install syslog-ng-core; \
@@ -79,7 +81,6 @@ RUN \
   \
   `# logrotate`; \
   apt-get -y install logrotate;
-
 
 # heka and supervisor configs
 ADD files/hekad/ /etc/hekad/
