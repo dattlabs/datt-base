@@ -98,19 +98,27 @@ RUN \
 ADD files/serf-scripts /files/
 
 RUN \
-  `# Install serf client 0.5.0`; \
-  mkdir -vp /opt/serf/; cd /opt/serf/; \
-  DL_LOCATION="https://dl.bintray.com/mitchellh/serf/"; \
-  DL_FILE="0.5.0_linux_amd64.zip"; \
-  wget --continue --no-check-certificate $DL_LOCATION$DL_FILE ; \
-  unzip $DL_FILE; \
-  rm -v *.zip;
+  `# Install serf client 0.5.0`                                    ; \
+  mkdir -vp /opt/serf/; cd /opt/serf/                              ; \
+  DL_LOCATION="https://dl.bintray.com/mitchellh/serf/"             ; \
+  DL_FILE="0.5.0_linux_amd64.zip"                                  ; \
+  wget --continue --no-check-certificate $DL_LOCATION$DL_FILE      ; \
+  unzip $DL_FILE                                                   ; \
+  rm -v *.zip                                                      ;
 
 RUN \
-  `# Install symlinks so it's in the path`; \
-  ln -s /opt/serf/serf /usr/sbin/serf; \
+  `# Install symlinks so it's in the path`                         ; \
+  ln -s /opt/serf/serf /usr/sbin/serf-scripts                      ;
 
 # Add app to supervisor
 RUN mkdir /var/log/supervisor/serf
 
-CMD ["/usr/bin/supervisord", "--nodaemon"]
+# To run in DEBUG mode, run the docker container with DEBUG=1 set in the environment.
+# Can set by running container with flag: `--env DEBUG=1`.
+
+ENV DEBUG 0
+
+CMD if [ $DEBUG -gt 0 ]                                            ; \
+      then echo [DEBUG]; /usr/bin/supervisord && /bin/bash         ; \
+      else /usr/bin/supervisord --nodaemon                         ; \
+    fi
