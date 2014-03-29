@@ -15,4 +15,4 @@ DOCKERINDEX=${DOCKERINDEX_LOCAL:-"$INDEX_NAME/"}
 # echo "DIR=$DIR"
 # echo "CURRENT_DIR=$CURRENT_DIR"
 
-docker run -i -t --rm -w "/files" --name "$CURRENT_DIR" --hostname $CURRENT_DIR $DOCKERINDEX$CURRENT_DIR bash -c "supervisord && /bin/bash"
+echo docker run -i -t --rm -w "/files" --name "$CURRENT_DIR" --hostname $CURRENT_DIR $DOCKERINDEX$CURRENT_DIR
