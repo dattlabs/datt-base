@@ -10,4 +10,4 @@ CURRENT_DIR="${DIR##*/}"
 INDEX_NAME=$(echo $CURRENT_DIR | cut -d- -f 1)
 DOCKERINDEX=${DOCKERINDEX_LOCAL:-"$INDEX_NAME/"}
 
-docker build --rm -t=$DOCKERINDEX$CURRENT_DIR:latest $DIR/.
+echo docker build --rm -t=$DOCKERINDEX$CURRENT_DIR:latest $DIR/.

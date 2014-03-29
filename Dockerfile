@@ -3,16 +3,21 @@ MAINTAINER John Albietz "inthecloud247@gmail.com"
 
 RUN \
   `# Dev Packages (very large. keep at top.)`; \
+  apt-get update; \
   apt-get -y install \
    python-software-properties \
    build-essential \
    make \
    automake \
    uuid-dev \
-   libtool
+   libtool; \
+  \
+  `# remove cached packages`; \
+  apt-get clean;
 
 RUN \
   `# install base utils`; \
+  apt-get update; \
   apt-get -y install \
    apt-utils \
    pkg-config \
@@ -26,7 +31,6 @@ RUN \
    sudo \
    `# git from ppa.`; \
   add-apt-repository -y ppa:git-core/ppa; \
-  apt-get update; \
   apt-get -y install git; \
   \
   `# useful system tools (iputils* has ping & common tools)`; \
@@ -53,7 +57,7 @@ RUN \
   apt-get -y install \
     supervisor \
     runit; \
-  pip install circus circus-web; \
+  pip install --upgrade circus circus-web; \
   \
   `# terminal multiplexers`; \
   apt-get -y install \
@@ -63,7 +67,10 @@ RUN \
   \
   `# cron w/o checks for lost+found and scans for mtab`; \
   apt-get -y install cron; \
-  rm -f /etc/cron.daily/standard;
+  rm -f /etc/cron.daily/standard; \
+  \
+  `# remove cached packages`; \
+  apt-get clean;
 
 RUN \
   `# logging`; \
@@ -81,6 +88,9 @@ RUN \
   \
   `# logrotate`; \
   apt-get -y install logrotate;
+  \
+  `# remove cached packages`; \
+  apt-get clean;
 
 # heka and supervisor configs
 ADD files/hekad/ /etc/hekad/
@@ -94,7 +104,8 @@ RUN \
   LOGSERVER_IP=$(/sbin/ip route | awk '/default/ { print $3; }'); \
   sed -i "s/{{LOGSERVER_IP}}/$LOGSERVER_IP/g" /etc/hekad/aggregator_output.toml;
 
-# serf
+## [serf]
+
 ADD files/serf-scripts /files/
 
 RUN \
@@ -112,6 +123,8 @@ RUN \
 
 # Add app to supervisor
 RUN mkdir /var/log/supervisor/serf
+
+## [/serf]
 
 # To run in DEBUG mode, run the docker container with DEBUG=1 set in the environment.
 # Can set by running container with flag: `--env DEBUG=1`.
