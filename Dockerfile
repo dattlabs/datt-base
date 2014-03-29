@@ -129,12 +129,14 @@ RUN mkdir /var/log/supervisor/serf
 # To run in DEBUG mode, run the docker container with RUN_DEBUG=1 set in the environment.
 # Can set by running container with flag: `--env RUN_DEBUG=1`.
 
+# modification to /etc/environment based on: https://github.com/dotcloud/docker/issues/2569
+
 ENV RUN_DEBUG 0
 
 CMD if [ $RUN_DEBUG -gt 0 ]                                         ; \
       then                                                            \
         echo [DEBUG]; env | grep "._" >> /etc/environment           ; \
-        env | grep _ >> /etc/environment                            ; \
+        env | grep "._" >> /etc/environment                         ; \
         /usr/bin/supervisord && /bin/bash                           ; \
       else                                                            \
         env | grep "._" >> /etc/environment                         ; \
