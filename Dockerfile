@@ -119,7 +119,7 @@ RUN \
 
 RUN \
   `# Install symlinks so it's in the path`                         ; \
-  ln -s /opt/serf/serf /usr/sbin/serf-scripts                      ;
+  ln -s /opt/serf/serf /usr/sbin/serf                              ;
 
 # Add app to supervisor
 RUN mkdir /var/log/supervisor/serf
@@ -136,7 +136,7 @@ ENV RUN_DEBUG 0
 CMD if [ $RUN_DEBUG -gt 0 ]                                         ; \
       then                                                            \
         echo [DEBUG]; env | grep "._" >> /etc/environment           ; \
-        env | grep "._" >> /etc/environment                         ; \
+        env | grep "._" >> /etc/environment                            ; \
         /usr/bin/supervisord && /bin/bash                           ; \
       else                                                            \
         env | grep "._" >> /etc/environment                         ; \
