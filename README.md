@@ -3,7 +3,7 @@ datt-base
 
 ### Introduction
 
-A base linux image based on ubuntu:12.04.3-LTS 
+A base linux image based on ubuntu:12.04-4
 Supervisord, Hekad, Cron, sshd and standard build utils have been pre-installed in this image. It will serve as the base image for all the datt series of Docker images.
 
 ### Usage
@@ -18,7 +18,7 @@ Supervisord, Hekad, Cron, sshd and standard build utils have been pre-installed 
     > git clone git@github.com:dattlabs/datt-base.git
     > cd datt-base
     > docker build -t {{ user }}/{{ image-name }} .
-  
+
 
 ### Login Details
 
