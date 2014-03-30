@@ -122,7 +122,7 @@ RUN \
   ln -s /opt/serf/serf /usr/sbin/serf                              ;
 
 # Add app to supervisor
-RUN mkdir /var/log/supervisor/serf
+RUN bash -c "mkdir -v /var/log/supervisor/{serf,serf-join,serf-agent}"
 
 ## [/serf]
 
