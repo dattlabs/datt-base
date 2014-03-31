@@ -106,7 +106,7 @@ RUN \
 
 ## [serf]
 
-ADD files/serf-scripts /files/
+ADD files/serf/ /files/serf
 
 RUN \
   `# Install serf client 0.5.0`                                    ; \
