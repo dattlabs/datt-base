@@ -92,9 +92,11 @@ RUN \
   `# remove cached packages`; \
   apt-get clean;
 
+ADD files/ /files/
+
 # heka and supervisor configs
-ADD files/hekad/ /etc/hekad/
-ADD files/supervisor/ /etc/supervisor/
+RUN ln -fs /files/hekad/ /etc/hekad/
+RUN ln -fs /files/supervisor/ /etc/supervisor/
 
 RUN \
   `# setup supervisord config files and log directories`; \
@@ -105,8 +107,6 @@ RUN \
   sed -i "s/{{LOGSERVER_IP}}/$LOGSERVER_IP/g" /etc/hekad/aggregator_output.toml;
 
 ## [serf]
-
-ADD files/serf/ /files/serf
 
 RUN \
   `# Install serf client 0.5.0`                                    ; \
@@ -133,12 +133,12 @@ RUN bash -c "mkdir -v /var/log/supervisor/{serf,serf-join,serf-agent}"
 
 ENV RUN_DEBUG 0
 
-CMD if [ $RUN_DEBUG -gt 0 ]                                         ; \
-      then                                                            \
-        echo [DEBUG]; env | grep "._" >> /etc/environment           ; \
-        env | grep "._" >> /etc/environment                            ; \
-        /usr/bin/supervisord && /bin/bash                           ; \
-      else                                                            \
-        env | grep "._" >> /etc/environment                         ; \
-        /usr/bin/supervisord --nodaemon                             ; \
+CMD if [ $RUN_DEBUG -gt 0 ]                                       ; \
+    then                                                            \
+      echo [DEBUG]; env | grep "._" >> /etc/environment           ; \
+      env | grep "._" >> /etc/environment                         ; \
+      /usr/bin/supervisord && /bin/bash                           ; \
+    else                                                            \
+      env | grep "._" >> /etc/environment                         ; \
+      /usr/bin/supervisord --nodaemon                             ; \
     fi                                                              ;
