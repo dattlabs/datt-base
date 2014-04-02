@@ -1,7 +1,7 @@
 #!/bin/bash
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-exec $DIR/check_install.sh
+$DIR/check_install.sh
 
 if [[ $? != 0 ]]; then
   echo >&2 "[FAIL] Serf Join: Missing Dependencies. Exiting."
