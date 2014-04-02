@@ -1,12 +1,10 @@
 #!/bin/bash
 
-INSTALL_CHECK=0
-for i in supervisord supervisorctl inotifywait serf; do
-  command -v $i >/dev/null 2>&1 || { echo >&2 "[FAIL] Program '$i' required, but not installed."; INSTALL_CHECK=1; }
-done
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+$DIR/check_install.sh
 
-if [ $INSTALL_CHECK -eq 1 ]; then
-  echo [FAIL] Serf Join: Missing Dependencies. Exiting.
+if [[ $? != 0 ]]; then
+  echo >&2 "[FAIL] Serf Join: Missing Dependencies. Exiting."
   exit 1
 fi
 
@@ -20,7 +18,7 @@ if [[ $1 = "-d" ]]; then
   serf join $SERF_IP:$SERF_PORT
   # serf join returned error? exit and let supervisor handle it.
   if [[ "$?" -ne "0" ]] ; then
-    echo "[FAIL] Serf Command: serf join $SERF_IP:$SERF_PORT"
+    echo >&2 "[FAIL] Serf Command: serf join $SERF_IP:$SERF_PORT"
     exit 1
   else
     echo "[OK] Serf Command: serf join $SERF_IP:$SERF_PORT"
@@ -30,8 +28,10 @@ if [[ $1 = "-d" ]]; then
 else
   # as a non-daemon, join only after serf agent is running
   until ps aux | grep -q "[s]erf agent"; do
-    echo "[FAIL] serf agent not running"
+    echo 2>&1 "[FAIL] serf agent not running"
     sleep 1
   done
   serf join $SERF_IP:$SERF_PORT && echo "[OK] serf agent running.";
 fi
+
+exit 0
