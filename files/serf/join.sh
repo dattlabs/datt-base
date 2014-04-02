@@ -1,11 +1,6 @@
 #!/bin/bash
 
-INSTALL_CHECK=0
-for i in supervisord supervisorctl inotifywait serf; do
-  command -v $i >/dev/null 2>&1 || { echo >&2 "[FAIL] Program '$i' required, but not installed."; INSTALL_CHECK=1; }
-done
-
-if [ $INSTALL_CHECK -eq 1 ]; then
+if [ `./check_install.sh` -eq 1 ]; then
   echo [FAIL] Serf Join: Missing Dependencies. Exiting.
   exit 1
 fi
