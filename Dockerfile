@@ -1,5 +1,5 @@
 FROM datt/datt-ubuntu:latest
-MAINTAINER John Albietz "inthecloud247@gmail.com"
+MAINTAINER John Albietz <inthecloud247@gmail.com>
 
 RUN \
   `# Dev Packages (very large. keep at top.)`; \
@@ -10,7 +10,8 @@ RUN \
    make \
    automake \
    uuid-dev \
-   libtool; \
+   libtool \
+   python-pip; \
   \
   `# remove cached packages`; \
   apt-get clean;
@@ -31,6 +32,7 @@ RUN \
    sudo \
    `# git from ppa.`; \
   add-apt-repository -y ppa:git-core/ppa; \
+  apt-get update; \
   apt-get -y install git; \
   \
   `# useful system tools (iputils* has ping & common tools)`; \
@@ -56,7 +58,8 @@ RUN \
   `# process supervisors`; \
   apt-get -y install \
     supervisor \
-    runit; \
+    runit \
+    inotify-tools; \
   pip install --upgrade circus circus-web; \
   \
   `# terminal multiplexers`; \
@@ -94,17 +97,19 @@ RUN \
 
 ADD files/ /files/
 
-# heka and supervisor configs
-RUN ln -fs /files/hekad/ /etc/hekad/
-RUN ln -fs /files/supervisor/ /etc/supervisor/
-
 RUN \
-  `# setup supervisord config files and log directories`; \
-  for p in hekad crond sshd syslog-ng; do mkdir -v /var/log/supervisor/$p; done; \
   \
-  `# Add LOGSERVER ip address to hekad config`; \
-  LOGSERVER_IP=$(/sbin/ip route | awk '/default/ { print $3; }'); \
-  sed -i "s/{{LOGSERVER_IP}}/$LOGSERVER_IP/g" /etc/hekad/aggregator_output.toml;
+  `# setup directories in /etc`; \
+  for p in hekad supervisor; do \
+    [ -h /etc/$p ] && echo "removing existing symlink $p" && unlink /etc/$p/; \
+    [ -d /etc/$p ] && echo "removing existing directory $p" && rm -rfv /etc/$p/; \
+    ln -vs /files/$p/ /etc/; \
+  done; \
+  \
+  `# setup directories in /var/log`; \
+  for p in hekad crond sshd syslog-ng; do \
+    mkdir -v /var/log/supervisor/$p; \
+  done;
 
 ## [serf]
 
@@ -116,29 +121,35 @@ RUN \
   wget --continue --no-check-certificate $DL_LOCATION$DL_FILE      ; \
   unzip $DL_FILE                                                   ; \
   rm -v *.zip                                                      ;
-
-RUN \
+  \
   `# Install symlinks so it's in the path`                         ; \
-  ln -s /opt/serf/serf /usr/sbin/serf                              ;
-
-# Add app to supervisor
-RUN bash -c "mkdir -v /var/log/supervisor/{serf,serf-join,serf-agent}"
+  ln -vs /opt/serf/serf /usr/sbin/serf                              ; \
+  \
+  `# Add app to supervisor`; \
+  for i in serf serf-join serf-agent; do \
+    mkdir -v /var/log/supervisor/$i; \
+  done;
 
 ## [/serf]
 
-# To run in DEBUG mode, run the docker container with RUN_DEBUG=1 set in the environment.
-# Can set by running container with flag: `--env RUN_DEBUG=1`.
+# # To run in DEBUG mode, run the docker container with RUN_DEBUG=1 set in the environment.
+# # Can set by running container with flag: `--env RUN_DEBUG=1`.
 
-# modification to /etc/environment based on: https://github.com/dotcloud/docker/issues/2569
+# # modification to /etc/environment based on: https://github.com/dotcloud/docker/issues/2569
 
-ENV RUN_DEBUG 0
+# ENV RUN_DEBUG 0
 
-CMD if [ $RUN_DEBUG -gt 0 ]                                       ; \
-    then                                                            \
-      echo [DEBUG]; env | grep "._" >> /etc/environment           ; \
-      env | grep "._" >> /etc/environment                         ; \
-      /usr/bin/supervisord && /bin/bash                           ; \
-    else                                                            \
-      env | grep "._" >> /etc/environment                         ; \
-      /usr/bin/supervisord --nodaemon                             ; \
-    fi                                                              ;
+# CMD if [ $RUN_DEBUG -gt 0 ]                                       ; \
+#     then                                                            \
+#       echo [DEBUG]; env | grep "._" >> /etc/environment           ; \
+#       env | grep "._" >> /etc/environment                         ; \
+#       /usr/bin/supervisord && /bin/bash                           ; \
+#     else                                                            \
+#       env | grep "._" >> /etc/environment                         ; \
+#       /usr/bin/supervisord --nodaemon                             ; \
+#     fi                                                              ;
+
+## TODO consider re-adding logserver setup.
+# `# Add LOGSERVER ip address to hekad config`; \
+# LOGSERVER_IP=$(/sbin/ip route | awk '/default/ { print $3; }'); \
+# sed -i "s/{{LOGSERVER_IP}}/$LOGSERVER_IP/g" /etc/hekad/aggregator_output.toml;
