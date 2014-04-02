@@ -123,7 +123,7 @@ RUN \
   rm -v *.zip                                                      ;
   \
   `# Install symlinks so it's in the path`                         ; \
-  ln -vs /opt/serf/serf /usr/sbin/serf                              ; \
+  ln -vs /opt/serf/serf /usr/sbin/serf                             ; \
   \
   `# Add app to supervisor`; \
   for i in serf-join serf-agent; do \
@@ -150,6 +150,6 @@ CMD if [ $RUN_DEBUG -gt 0 ]                                       ; \
     fi                                                              ;
 
 # TODO consider re-adding logserver setup.
-`# Add LOGSERVER ip address to hekad config`; \
-LOGSERVER_IP=$(/sbin/ip route | awk '/default/ { print $3; }'); \
-sed -i "s/{{LOGSERVER_IP}}/$LOGSERVER_IP/g" /etc/hekad/aggregator_output.toml;
+# `# Add LOGSERVER ip address to hekad config`; \
+# LOGSERVER_IP=$(/sbin/ip route | awk '/default/ { print $3; }'); \
+# sed -i "s/{{LOGSERVER_IP}}/$LOGSERVER_IP/g" /etc/hekad/aggregator_output.toml;
