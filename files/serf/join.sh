@@ -17,16 +17,16 @@ SERF_DIR=${SERFJOIN_DIR:-"/files/serf"}
 if [[ $1 = "-d" ]]; then
   sleep 1
   echo "[INFO] daemonizing for supervisor"
-    serf join $SERF_IP:$SERF_PORT
-    # serf join returned error? exit and let supervisor handle it.
-    if [[ "$?" -ne "0" ]] ; then
-      echo "[FAIL] Serf Command: serf join $SERF_IP:$SERF_PORT"
-      exit 1
-    else
-      echo "[OK] Serf Command: serf join $SERF_IP:$SERF_PORT"
-    fi
-    inotifywait -rq $SERF_DIR 2>&1 > /dev/null
-    serf leave && echo "[INFO] serf agent gracefully left the cluster"
+  serf join $SERF_IP:$SERF_PORT
+  # serf join returned error? exit and let supervisor handle it.
+  if [[ "$?" -ne "0" ]] ; then
+    echo "[FAIL] Serf Command: serf join $SERF_IP:$SERF_PORT"
+    exit 1
+  else
+    echo "[OK] Serf Command: serf join $SERF_IP:$SERF_PORT"
+  fi
+  inotifywait -rq $SERF_DIR 2>&1 > /dev/null
+  serf leave && echo "[INFO] serf agent gracefully left the cluster"
 else
   # as a non-daemon, join only after serf agent is running
   until ps aux | grep -q "[s]erf agent"; do
