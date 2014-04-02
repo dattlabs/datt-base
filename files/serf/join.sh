@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ `./check_install.sh` -eq 1 ]; then
+if `./check_install.sh`; then
   echo [FAIL] Serf Join: Missing Dependencies. Exiting.
   exit 1
 fi
