@@ -3,75 +3,75 @@ MAINTAINER John Albietz <inthecloud247@gmail.com>
 
 RUN \
   `# Dev Packages (very large. keep at top.)`; \
-  apt-get update; \
-  apt-get -y install \
+  apt-get update;             \
+  apt-get -y install          \
    python-software-properties \
-   build-essential \
-   make \
-   automake \
-   uuid-dev \
-   libtool \
-   python-pip; \
-  \
+   build-essential            \
+   make                       \
+   automake                   \
+   uuid-dev                   \
+   libtool                    \
+   python-pip;                \
+                              \
   `# remove cached packages`; \
   apt-get clean;
 
 RUN \
-  `# install base utils`; \
-  apt-get update; \
-  apt-get -y install \
-   apt-utils \
-   pkg-config \
-   vim \
-   psmisc \
-   less \
-   curl \
-   wget \
-   rsync \
-   unzip \
-   sudo \
-   `# git from ppa.`; \
+  `# install base utils`;     \
+  apt-get update;             \
+  apt-get -y install          \
+   apt-utils                  \
+   pkg-config                 \   
+   vim                        \
+   psmisc                     \
+   less                       \
+   curl                       \
+   wget                       \
+   rsync                      \
+   unzip                      \
+   sudo                       \
+   `# git from ppa.`;         \
   add-apt-repository -y ppa:git-core/ppa; \
-  apt-get update; \
-  apt-get -y install git; \
-  \
+  apt-get update;             \
+  apt-get -y install git;     \
+                              \
   `# useful system tools (iputils* has ping & common tools)`; \
-  apt-get -y install \
-    iotop \
-    pv \
-    htop \
-    hdparm \
-    sysstat \
-    ethtool \
-    bwm-ng \
-    net-tools \
-    iputils*; \
-  \
-  `# install base services`; \
-  \
-  `# ssh w/docker fix`; \
-  apt-get -y install \
-    openssh-server \
-    ssh; \
-  mkdir -v /var/run/sshd; \
-  \
-  `# process supervisors`; \
-  apt-get -y install \
-    supervisor \
-    runit \
-    inotify-tools; \
+  apt-get -y install          \
+    iotop                     \
+    pv                        \
+    htop                      \
+    hdparm                    \
+    sysstat                   \
+    ethtool                   \
+    bwm-ng                    \
+    net-tools                 \
+    iputils*;                 \
+                              \
+  `# install base services`;  \
+                              \
+  `# ssh w/docker fix`;       \
+  apt-get -y install          \
+    openssh-server            \
+    ssh;                      \
+  mkdir -v /var/run/sshd;     \
+                              \   
+  `# process supervisors`;    \
+  apt-get -y install          \
+    supervisor                \
+    runit                     \
+    inotify-tools;            \
   pip install --upgrade circus circus-web; \
-  \
-  `# terminal multiplexers`; \
-  apt-get -y install \
-    screen \
-    byobu \
-    tmux; \
-  \
+                              \
+  `# terminal multiplexers`;  \
+  apt-get -y install          \
+    screen                    \
+    byobu                     \
+    tmux;                     \
+                              \
   `# cron w/o checks for lost+found and scans for mtab`; \
-  apt-get -y install cron; \
+  apt-get -y install cron;    \
   rm -f /etc/cron.daily/standard; \
-  \
+                              \
   `# remove cached packages`; \
   apt-get clean;
 
@@ -107,30 +107,26 @@ RUN \
   done; \
   \
   `# setup directories in /var/log`; \
-  for p in hekad crond sshd syslog-ng; do \
+  for p in test_server hekad crond sshd syslog-ng; do \
     mkdir -v /var/log/supervisor/$p; \
   done;
 
-## [serf]
-
 RUN \
-  `# Install serf client 0.5.0`                                    ; \
-  mkdir -vp /opt/serf/; cd /opt/serf/                              ; \
-  DL_LOCATION="https://dl.bintray.com/mitchellh/serf/"             ; \
-  DL_FILE="0.5.0_linux_amd64.zip"                                  ; \
-  wget --continue --no-check-certificate $DL_LOCATION$DL_FILE      ; \
-  unzip $DL_FILE                                                   ; \
-  rm -v *.zip                                                      ;
-  \
-  `# Install symlinks so it's in the path`                         ; \
-  ln -vs /opt/serf/serf /usr/sbin/serf                             ; \
-  \
-  `# Add app to supervisor`; \
-  for i in serf-join serf-agent; do \
-    mkdir -v /var/log/supervisor/$i; \
+  `# Install serf client 0.5.0`                               ; \
+  mkdir -vp /opt/serf/; cd /opt/serf/                         ; \
+  DL_LOCATION="https://dl.bintray.com/mitchellh/serf/"        ; \
+  DL_FILE="0.5.0_linux_amd64.zip"                             ; \
+  wget --continue --no-check-certificate $DL_LOCATION$DL_FILE ; \
+  unzip $DL_FILE                                              ; \
+  rm -v *.zip                                                 ; \
+                                                                \
+  `# Install symlinks so it's in the path`                    ; \
+  ln -vs /opt/serf/serf /usr/sbin/serf                        ; \
+                                                                \
+  `# Add app to supervisor`                                   ; \
+  for i in serf-join serf-agent; do                             \
+    mkdir -v /var/log/supervisor/$i                           ; \
   done;
-
-## [/serf]
 
 # To run in DEBUG mode, run the docker container with RUN_DEBUG=1 set in the environment.
 # Can set by running container with flag: `--env RUN_DEBUG=1`.
@@ -139,17 +135,20 @@ RUN \
 
 ENV RUN_DEBUG 0
 
-CMD if [ $RUN_DEBUG -gt 0 ]                                       ; \
-    then                                                            \
-      echo [DEBUG]; env | grep "._" >> /etc/environment           ; \
-      env | grep "._" >> /etc/environment                         ; \
-      /usr/bin/supervisord && /bin/bash                           ; \
-    else                                                            \
-      env | grep "._" >> /etc/environment                         ; \
-      /usr/bin/supervisord --nodaemon                             ; \
-    fi                                                              ;
+# for /files/test_server.js
+RUN \
+  apt-get install -y nodejs; \
+  mkdir -p /files/tests
 
-# TODO consider re-adding logserver setup.
-# `# Add LOGSERVER ip address to hekad config`; \
-# LOGSERVER_IP=$(/sbin/ip route | awk '/default/ { print $3; }'); \
-# sed -i "s/{{LOGSERVER_IP}}/$LOGSERVER_IP/g" /etc/hekad/aggregator_output.toml;
+EXPOSE 13337
+
+CMD \
+  if [ $RUN_DEBUG -gt 0 ]                                       ; \
+  then                                                            \
+    echo [DEBUG]; env | grep "._" >> /etc/environment           ; \
+    env | grep "._" >> /etc/environment                         ; \
+    /usr/bin/supervisord && /bin/bash                           ; \
+  else                                                            \
+    env | grep "._" >> /etc/environment                         ; \
+    /usr/bin/supervisord --nodaemon                             ; \
+  fi                                                              ;
