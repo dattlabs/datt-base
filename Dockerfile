@@ -21,7 +21,7 @@ RUN \
   apt-get update;             \
   apt-get -y install          \
    apt-utils                  \
-   pkg-config                 \   
+   pkg-config                 \
    vim                        \
    psmisc                     \
    less                       \
