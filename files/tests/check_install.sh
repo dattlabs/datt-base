@@ -1,0 +1,1 @@
+../serf/check_install.sh
