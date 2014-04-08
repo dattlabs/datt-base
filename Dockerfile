@@ -76,36 +76,35 @@ RUN \
   apt-get clean;
 
 RUN \
-  `# logging`; \
-  \
-  `# heka 0.5.1 install`; \
+  `# logging`;                       \
+                                     \
+  `# heka 0.5.1 install`;            \
   DL_LOCATION="https://github.com/mozilla-services/heka/releases/download/v0.5.1/"; \
-  DL_FILE="heka_0.5.1_amd64.deb"; \
+  DL_FILE="heka_0.5.1_amd64.deb";    \
   wget -c --no-check-certificate $DL_LOCATION$DL_FILE; \
-  dpkg -i ./$DL_FILE; \
-  rm -vf ./$DL_FILE; \
-  \
-  `# syslog-ng`; \
+  dpkg -i ./$DL_FILE;                \
+  rm -vf ./$DL_FILE;                 \
+                                     \
+  `# syslog-ng`;                     \
   apt-get -y install syslog-ng-core; \
-  mkdir -p /var/lib/syslog-ng; \
-  \
-  `# logrotate`; \
-  apt-get -y install logrotate;
-  \
-  `# remove cached packages`; \
+  mkdir -p /var/lib/syslog-ng;       \
+                                     \
+  `# logrotate`;                     \
+  apt-get -y install logrotate;      \
+                                     \
+  `# remove cached packages`;        \
   apt-get clean;
 
 ADD files/ /files/
 
 RUN \
-  \
-  `# setup directories in /etc`; \
-  for p in hekad supervisor; do \
+  `# setup directories in /etc`;     \
+  for p in hekad supervisor; do      \
     [ -h /etc/$p ] && echo "removing existing symlink $p" && unlink /etc/$p/; \
     [ -d /etc/$p ] && echo "removing existing directory $p" && rm -rfv /etc/$p/; \
-    ln -vs /files/$p/ /etc/; \
-  done; \
-  \
+    ln -vs /files/$p/ /etc/;         \
+  done;                              \
+                                     \
   `# setup directories in /var/log`; \
   for p in test_server hekad crond sshd syslog-ng; do \
     mkdir -v /var/log/supervisor/$p; \
