@@ -143,12 +143,11 @@ RUN \
 EXPOSE 13337
 
 CMD \
-  if [ $RUN_DEBUG -gt 0 ]                                       ; \
+  env | grep "._" >> /etc/environment                           ; \
+  if [ $RUN_DEBUG -ne 0 ]                                       ; \
   then                                                            \
-    echo [DEBUG]; env | grep "._" >> /etc/environment           ; \
-    env | grep "._" >> /etc/environment                         ; \
+    echo [DEBUG]           ; \
     /usr/bin/supervisord && /bin/bash                           ; \
   else                                                            \
-    env | grep "._" >> /etc/environment                         ; \
     /usr/bin/supervisord --nodaemon                             ; \
   fi                                                              ;
