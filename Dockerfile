@@ -120,7 +120,7 @@ RUN \
   unzip $DL_FILE                                              ; \
   rm -v *.zip                                                 ; \
                                                                 \
-  `# Install symlinks so it's in the path`                    ; \
+  `# Install symlinks so they are in the path`                ; \
   ln -vs /opt/serf/serf /usr/sbin/serf                        ; \
                                                                 \
   `# Add app to supervisor`                                   ; \
@@ -146,7 +146,7 @@ CMD \
   env | grep "._" >> /etc/environment                           ; \
   if [ $RUN_DEBUG -ne 0 ]                                       ; \
   then                                                            \
-    echo [DEBUG]           ; \
+    echo [DEBUG]                                                ; \
     /usr/bin/supervisord && /bin/bash                           ; \
   else                                                            \
     /usr/bin/supervisord --nodaemon                             ; \
