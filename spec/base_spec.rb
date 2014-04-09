@@ -10,3 +10,4 @@ describe "base image" do
     expect(@image).to_not be_nil
   end
 end
+
