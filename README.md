@@ -4,7 +4,9 @@ datt-base
 ### Introduction
 
 A base linux image based on ubuntu:12.04-4
-Supervisord, Hekad, Cron, sshd and standard build utils have been pre-installed in this image. It will serve as the base image for all the datt series of Docker images.
+
+Supervisord, Hekad, Cron, sshd and standard build utils have been pre-installed in this
+image. It will serve as the basis for all of the datt series of Docker images.
 
 ### Usage
 
@@ -14,21 +16,19 @@ Supervisord, Hekad, Cron, sshd and standard build utils have been pre-installed 
 
 ##### Using Source
 
-
-    > git clone git@github.com:dattlabs/datt-base.git
-    > cd datt-base
-    > docker build -t {{ user }}/{{ image-name }} .
-
+    > git clone git@github.com:dattlabs/datt-metadatt.git
+    > cd datt-metadatt
+    > ./make.py base
 
 ### Login Details
 
-Defaults (easy to later change these in an custom layer)
+Defaults (can be easily changed in a later custom layer)
 - root / root
 - ubuntu / ubuntu
 
 ### Installed Packages
 
-- check the dockerfile for the latest...
+- Check the Dockerfile for the latest...
 
 ### Configured Services & Ports
 
