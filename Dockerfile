@@ -137,8 +137,10 @@ ENV RUN_DEBUG 0
 
 # for /files/test_server.js
 RUN \
+  apt-get update; \
   apt-get install -y nodejs; \
-  mkdir -p /files/tests
+  mkdir -p /files/tests; \
+  apt-get clean
 
 EXPOSE 13337
 
