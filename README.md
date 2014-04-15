@@ -18,7 +18,7 @@ image. It will serve as the basis for all of the datt series of Docker images.
 
     > git clone git@github.com:dattlabs/datt-metadatt.git
     > cd datt-metadatt
-    > ./make.py base
+    > ./makedatt base
 
 ### Login Details
 
