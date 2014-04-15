@@ -141,7 +141,12 @@ RUN \
   mkdir -p /files/tests; \
   apt-get clean
 
+# Expose port for test_server.js
 EXPOSE 13337
+
+# Expose ports for serf-agent
+EXPOSE 7373
+EXPOSE 7946
 
 CMD \
   env | grep "._" >> /etc/environment                           ; \
