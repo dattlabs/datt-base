@@ -123,7 +123,7 @@ RUN \
   ln -vs /opt/serf/serf /usr/sbin/serf                        ; \
                                                                 \
   `# Add app to supervisor`                                   ; \
-  for i in serf-join serf-agent; do                             \
+  for i in serf-agent; do                                       \
     mkdir -v /var/log/supervisor/$i                           ; \
   done;
 
